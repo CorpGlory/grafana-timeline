@@ -1,0 +1,5 @@
+.DS_Store
+.baseDir.ts
+bower_components
+node_modules
+dist

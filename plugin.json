@@ -1,0 +1,30 @@
+{
+  "type": "panel",
+  "name": "Datatable Panel",
+  "id": "ebertech-timeline-panel",
+  "info": {
+    "description": "Timeline with annotations visualisation",
+    "author": {
+      "name": "Alexey Velikiy (ping@corpglory.com)",
+      "url": "https://github.com/jonyrock"
+    },
+    "keywords": ["timeline", "visjs", "annotations"],
+    "logos": {
+    },
+    "links": [{
+      "name": "Project site",
+      "url": ""
+    }, {
+      "name": "MIT License",
+      "url": ""
+    }],
+    "screenshots": [],
+    "version": "0.0.1",
+    "updated": "2017-05-13"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "3.x.x",
+    "plugins": []
+  }
+}
