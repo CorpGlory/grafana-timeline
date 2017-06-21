@@ -18,15 +18,18 @@ export class Ctrl extends PanelCtrl {
   }
 
   onRender() {
-    var height = this.containerHeight - TITLE_HIGHT;
-    if(height < 25) {
-      height = 25;
-    }
-    this.$holder.css('height', height + 'px');
   }
 
   link(scope, elem, attrs, ctrl) {
-    this.$holder = $(elem[0]).find('.tagsline')
+    this.$mainholder = $(elem[0]).find('.timelineHolder');
+    this.$visHolder = this.$mainholder.find('.visHolder');
+
+    this._initGraph();
+  }
+
+
+  _initGraph() {
+    this.graph = new Graph(this.$visHolder);
   }
 
 }
