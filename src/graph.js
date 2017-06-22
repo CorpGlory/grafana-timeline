@@ -2,12 +2,14 @@ import * as vis from './external/vis.min';
 
 
 export class Graph {
-  constructor($holder) {
+  constructor($holder, height) {
     if($holder.length !== 1) {
       throw new Error('Can`t find holder for graph in DOM');
     }
+
+    console.log($holder.height());
     var container = $holder.get()[0];
-    
+
     var items = new vis.DataSet([
       {id: 1, content: 'item 1', start: '2014-04-20'},
       {id: 2, content: 'item 2', start: '2014-04-14'},
@@ -18,8 +20,18 @@ export class Graph {
     ]);
     // Configuration for the Timeline
     var options = {};
+    if(height !== undefined) {
+      options.height = height + 'px';
+    }
     // Create a Timeline
-    var timeline = new vis.Timeline(container, items, options);
+    this._timeline = new vis.Timeline(container, items, options);
+  }
+
+  set height(value) {
+    if(!$.isNumeric(value)) {
+      throw new Error('height is not numberic');
+    }
+    this._timeline.setOptions({ height: value + 'px' });
   }
 }
 

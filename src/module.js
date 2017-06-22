@@ -25,11 +25,12 @@ export class Ctrl extends PanelCtrl {
     this._initStyles();
 
     this.annotationsManager = new AnnotationsManager(this.panel);
-
-    console.log(this.annotationsManager.mappingFunctionSource);
   }
 
   onRender() {
+    if(this._graph !== undefined) {
+      this._graph.height = this.height;
+    }
   }
 
   link(scope, elem, attrs, ctrl) {
@@ -60,7 +61,7 @@ export class Ctrl extends PanelCtrl {
   }
 
   _initGraph() {
-    this.graph = new Graph(this.$visHolder);
+    this._graph = new Graph(this.$visHolder, this.height);
   }
 
   get panelPath() {
