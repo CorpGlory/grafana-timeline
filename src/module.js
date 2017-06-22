@@ -1,36 +1,29 @@
 import { Graph } from './graph';
 import { AnnotationsManager } from './annotations/annotations-manager.js';
 
-import { PanelCtrl } from 'app/plugins/sdk';
-import config from 'app/core/config';
+import { MetricsPanelCtrl } from 'app/plugins/sdk';
 
 
 const PANEL_DEFAULTS = {
-  annotations: AnnotationsManager.getDefaultOption()
+  annotationTypes: []
 };
 
 
-export class Ctrl extends PanelCtrl {
+export class Ctrl extends MetricsPanelCtrl {
   constructor($scope, $injector) {
     super($scope, $injector);
 
     _.defaults(this.panel, PANEL_DEFAULTS);
     $scope.dashboard = this.dashboard;
 
-    this.events.on('render', this.onRender.bind(this));
-    this.events.on('data-received', this.onDataReceived.bind(this));
-    this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
-    this.events.on('panel-initialized', this.onRender.bind(this));
+    this.events.on('render', this._onRender.bind(this));
+    this.events.on('data-received', this._onDataReceived.bind(this));
+    this.events.on('init-edit-mode', this._onInitEditMode.bind(this));
+    this.events.on('panel-initialized', this._onRender.bind(this));
 
     this._initStyles();
 
     this.annotationsManager = new AnnotationsManager(this.panel);
-  }
-
-  onRender() {
-    if(this._graph !== undefined) {
-      this._graph.height = this.height;
-    }
   }
 
   link(scope, elem, attrs, ctrl) {
@@ -40,18 +33,30 @@ export class Ctrl extends PanelCtrl {
     this._initGraph();
   }
 
-  onInitEditMode() {
+  _onRender() {
+    if(this._graph !== undefined) {
+      this._graph.height = this.height;
+    }
+  }
+
+  _onInitEditMode() {
     var thisPartialPath = this.panelPath + 'partials/';
     this.addEditorTab(
       'Data Mapping', thisPartialPath + 'editor.mapping.html', 2
     );
   }
 
-  onDataReceived() {
+  _onDataReceived(seriesList) {
+    if(this._graph === undefined) {
+      throw new Error('Get data before graph');
+    }
+    var annotations = this.annotationsManager
+                          .mapSeriesToAnnotations(seriesList);
+    this._graph.setAnnotations(annotations);
+    this.render(this.seriesList);
   }
 
   _initStyles() {
-    //import './css/panel.css!';
     System.import(this.panelPath + 'css/panel.base.css!');
     if (grafanaBootData.user.lightTheme) {
       System.import(this.panelPath + 'css/panel.light.css!');

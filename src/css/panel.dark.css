@@ -1,3 +1,12 @@
 .vis-holder .vis-time-axis .vis-text {
   color: #D8D9DA;
 }
+
+.vis-holder .vis-panel.vis-bottom,
+.vis-holder .vis-panel.vis-center,
+.vis-holder .vis-panel.vis-left,
+.vis-holder .vis-panel.vis-right,
+.vis-holder .vis-panel.vis-top
+{
+  border: 1px #555;
+}

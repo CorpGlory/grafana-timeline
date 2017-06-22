@@ -1,63 +1,39 @@
-import { Annotation } from './annotation';
+import { AnnotationType } from './annotation-type.js';
 
 
 export class AnnotationsManager {
-  static getDefaultOption() {
-     return {
-       mappingFunctionSource: `/*
-Should return:
-[{
-  typeIndex: (Number),
-  time: (Number),
-  lat: (Float),
-  lng: (Float),
-  icon: [String]
-}]
-*/
-function(seriesListItem) {
-  // expecting that seriesListItem.type == 'table';
-  var res = [];
-  for(var i = 0; i < seriesListItem.rows.length; i++) {
-    var r = seriesListItem.rows[i];
-    var jsTime = new Date(r[0]);
-    var typeIndex = jsTime.getTime() % 3;
-    var icon = undefined;
-    if(typeIndex == 1) {
-      icon = 'fa-unlink';
-    }
-    if(typeIndex == 2) {
-      icon = 'fa-ra';
-    }
-    var lat = r[1];
-    var lng = r[2];
-    res.push({
-      typeIndex: typeIndex,
-      time: r[0],
-      lat: lat,
-      lng: lng,
-      icon: icon
-    });
-  }
-  return res;
-}`
-    }
-  }
 
   constructor(options) {
     this._options = options;
+    this._adjustOptions();
+    this._updateTypes();
   }
 
-  get mappingFunctionSource() {
-    console.log('shit!');
-    console.log(this._options);
-    return this._options.annotations.mappingFunctionSource;
+  mapSeriesToAnnotations(seriesList) {
+    // a small hack: if it is an object, than consider it as a 1 - array
+    if(!Array.isArray(seriesList)) {
+      seriesList = [seriesList];
+    }
+    return seriesList.map(
+      (sl, i) => this._types[i].mapSeriesToAnnotations(sl)
+    );
   }
 
-  set mappingFunctionSource(value) {
-    this._options.annotations.mappingFunctionSource = value;
+  get types() { return this._types; }
+
+  _updateTypes() {
+    this._types = this._options.targets.map(
+      (t, i) => new AnnotationType(t, this._options.annotationTypes[i])
+    );
   }
 
-  setMeasures() {
-
+  _adjustOptions() {
+    _(this._options.targets)
+      .drop(this._options.annotationTypes.length)
+      .each(t => {
+        this._options.annotationTypes.push(
+          AnnotationType.getDefaultOptions(t)
+        );
+      });
   }
 }
