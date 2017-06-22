@@ -12,7 +12,7 @@ module.exports = (grunt) => {
       src_to_dist: {
         cwd: 'src',
         expand: true,
-        src: ['**/*', '!**/*.js', '!**/*.scss', '!img/**/*'],
+        src: ['**/*'],
         dest: 'dist'
       },
       externals: {
@@ -46,13 +46,16 @@ module.exports = (grunt) => {
       options: {
         sourceMap: true,
         presets: ['es2015'],
-        plugins: ['transform-es2015-modules-systemjs', 'transform-es2015-for-of'],
+        plugins: [
+          'transform-es2015-modules-systemjs',
+          'transform-es2015-for-of'
+        ],
       },
       dist: {
         files: [{
           cwd: 'src',
           expand: true,
-          src: ['*.js'],
+          src: ['**/*.js', '!external/*'],
           dest: 'dist',
           ext: '.js'
         }]
