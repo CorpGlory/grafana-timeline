@@ -26,6 +26,11 @@ export class Graph {
     this._timeline.setOptions({ height: value + 'px' });
   }
 
+  set range(range) {
+    console.log(typeof(range.from));
+    this._timeline.setWindow(range.from, range.to)
+  }
+
   setAnnotations(annotations) {
     var ans = annotations.map(a => a.getVisObject());
     var items = new vis.DataSet(ans);

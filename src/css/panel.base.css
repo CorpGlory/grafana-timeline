@@ -6,6 +6,11 @@
   width: 100%;
 }
 
+.vis-holder {
+  margin-left: 23px;
+  margin-right: 18px;
+}
+
 .vis-holder .vis-timeline {
   border: none;
 }
