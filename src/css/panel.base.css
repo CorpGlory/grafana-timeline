@@ -9,3 +9,7 @@
 .vis-holder .vis-timeline {
   border: none;
 }
+
+.vis-holder .vis-time-axis .vis-text {
+  font-size: 12px;
+}
