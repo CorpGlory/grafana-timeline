@@ -52,8 +52,8 @@ export class Ctrl extends MetricsPanelCtrl {
     }
     var annotations = this.annotationsManager
                           .mapSeriesToAnnotations(seriesList);
-    this._graph.setAnnotations(annotations);
     this._graph.range = this.range;
+    this._graph.setAnnotations(annotations);
     this.render(this.seriesList);
   }
 

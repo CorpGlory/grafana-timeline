@@ -23,16 +23,4 @@ export class Annotation {
   get start() { return this._start; }
   get end() { return this._end; }
 
-  get _visType() {
-    if(this._type === 'point') {
-      return 'ponit';
-    }
-    if(this._type === 'range') {
-      return 'range';
-    }
-    if(this._type === 'ray') {
-      return 'range';
-    }
-  }
-
 }

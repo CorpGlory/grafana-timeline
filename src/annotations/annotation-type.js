@@ -10,15 +10,44 @@ const DEFAULT_MAPPING = function(seriesListItem) {
     end: [timestamp],
   }]
   */
-  console.log(seriesListItem);
-  var res = [];
-  for(var i = 0; i < seriesListItem.length; i++) {
 
+  var points = seriesListItem.datapoints;
+  var fromTime = points[0][1];
+  var toTime = points[points.length - 1][1];
+
+  var THRESHOLD = points[0][0] + 1;
+
+  var res = [];
+  var currentSpan = undefined;
+  for(var i = 0; i < points.length; i++) {
+    var val = points[i][0];
+    var timestamp = points[i][1];
+
+    if(val > THRESHOLD) {
+      if(currentSpan === undefined) {
+        currentSpan = { type: 'segment', start: timestamp };
+      }
+    } else {
+      if(currentSpan !== undefined) {
+        currentSpan.end = timestamp;
+        res.push(currentSpan);
+        currentSpan = undefined;
+      }
+    }
   }
-  res.push({
-    type: 'point',
-    start: 12321312
-  });
+
+  if(currentSpan !== undefined) {
+    currentSpan.type = 'ray';
+    res.push(currentSpan);
+  }
+
+  //if(res.length === 0) {
+    res.push({
+      type: 'segment',
+      start: Math.round(fromTime + (toTime - fromTime) * 0.1),
+      end: Math.round(fromTime + (toTime - fromTime) * 0.9)
+    });
+  //}
 
   return res;
 }

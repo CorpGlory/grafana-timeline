@@ -27,22 +27,35 @@ export class Graph {
   }
 
   set range(range) {
+    this._range = range;
     this._timeline.setWindow(range.from, range.to)
   }
 
-  annotationToVisObject(annotation) {
+  _getVisType(annotation) {
+    if(annotation.type === 'point') {
+      return 'ponit';
+    }
+    if(annotation.type === 'range') {
+      return 'range';
+    }
+    if(annotation.type === 'ray') {
+      return 'range';
+    }
+  }
+
+  _annotationToVisObject(annotation) {
     return {
       id: annotation.id,
-      type: annotation.type,
+      type: this._getVisType(annotation),
       start: annotation.start,
-      end: annotation.end,
+      end: annotation.end === undefined ? this._range.to : annotation.end,
       content: 'no content'
     };
   }
 
   setAnnotations(annotations) {
     var ans = _(annotations)
-      .map(as => as.map(this.annotationToVisObject))
+      .map(as => as.map(this._annotationToVisObject.bind(this)))
       .flatten()
       .value();
     var items = new vis.DataSet(ans);
