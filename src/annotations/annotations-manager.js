@@ -14,6 +14,8 @@ export class AnnotationsManager {
     if(!Array.isArray(seriesList)) {
       seriesList = [seriesList];
     }
+    console.log('seriesList');
+    console.log(seriesList);
     return seriesList.map(
       (sl, i) => this._types[i].mapSeriesToAnnotations(sl)
     );

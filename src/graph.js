@@ -27,12 +27,24 @@ export class Graph {
   }
 
   set range(range) {
-    console.log(typeof(range.from));
     this._timeline.setWindow(range.from, range.to)
   }
 
+  annotationToVisObject(annotation) {
+    return {
+      id: annotation.id,
+      type: annotation.type,
+      start: annotation.start,
+      end: annotation.end,
+      content: 'no content'
+    };
+  }
+
   setAnnotations(annotations) {
-    var ans = annotations.map(a => a.getVisObject());
+    var ans = _(annotations)
+      .map(as => as.map(this.annotationToVisObject))
+      .flatten()
+      .value();
     var items = new vis.DataSet(ans);
     this._timeline.setItems(items);
   }

@@ -1,43 +1,36 @@
+import { Annotation } from './annotation.js';
+
+
+const DEFAULT_MAPPING = function(seriesListItem) {
+  /*
+  Should return:
+  [{
+    type: ('point' | 'segment' | 'ray')
+    start: (timestamp),
+    end: [timestamp],
+  }]
+  */
+  console.log(seriesListItem);
+  var res = [];
+  for(var i = 0; i < seriesListItem.length; i++) {
+
+  }
+  res.push({
+    type: 'point',
+    start: 12321312
+  });
+
+  return res;
+}
+
 export class AnnotationType {
   static getDefaultOptions(marticsTarget) {
-     return {
+    return {
        name: 'AnnotationsLayer ' + marticsTarget.refId,
-       mappingFunctionSource: `/*
-Should return:
-[{
-  typeIndex: (Number),
-  time: (Number),
-  lat: (Float),
-  lng: (Float),
-  icon: [String]
-}]
-*/
-function(seriesListItem) {
-  // expecting that seriesListItem.type == 'table';
-  var res = [];
-  for(var i = 0; i < seriesListItem.rows.length; i++) {
-    var r = seriesListItem.rows[i];
-    var jsTime = new Date(r[0]);
-    var typeIndex = jsTime.getTime() % 3;
-    var icon = undefined;
-    if(typeIndex == 1) {
-      icon = 'fa-unlink';
-    }
-    if(typeIndex == 2) {
-      icon = 'fa-ra';
-    }
-    var lat = r[1];
-    var lng = r[2];
-    res.push({
-      typeIndex: typeIndex,
-      time: r[0],
-      lat: lat,
-      lng: lng,
-      icon: icon
-    });
-  }
-  return res;
-}`
+       mappingFunctionSource: (DEFAULT_MAPPING + "$")
+        .replace('function DEFAULT_MAPPING(', 'function(')
+        .replace(new RegExp('        ', 'g'), '  ')
+        .replace('      }$', '}')
     }
   }
 
@@ -76,7 +69,10 @@ function(seriesListItem) {
   }
 
   mapSeriesToAnnotations(seriesListItem) {
-    return this.mappingFunction(seriesListItem);
+    var raws = this.mappingFunction(seriesListItem);
+    return raws.map((r, i) => new Annotation(
+      this, i, r.type, r.start, r.end
+    ));
   }
 
 

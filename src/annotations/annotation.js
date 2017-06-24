@@ -1,8 +1,8 @@
 
 const ANNOTATIONS_TYPES = [
+  'segment',
   'point',
   'ray',
-  'segment'
 ];
 
 export class Annotation {
@@ -17,17 +17,22 @@ export class Annotation {
     this._end = end;
   }
 
+  get annotationType() { return this._annotationType; }
   get id() { return this._id; }
   get type() { return this._type; }
-  get annotationType() { return this._annotationType; }
+  get start() { return this._start; }
+  get end() { return this._end; }
 
-  getVisObject() {
-    return {
-      id: this._id,
-      type: this._type,
-      start: this._start,
-      end: this._end,
-      content: 'no content'
-    };
+  get _visType() {
+    if(this._type === 'point') {
+      return 'ponit';
+    }
+    if(this._type === 'range') {
+      return 'range';
+    }
+    if(this._type === 'ray') {
+      return 'range';
+    }
   }
+
 }
