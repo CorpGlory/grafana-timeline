@@ -6,11 +6,12 @@ const ANNOTATIONS_TYPES = [
 ];
 
 export class Annotation {
-  constructor(annotationType, id, type, start, end) {
+  constructor(annotationType, id, content, type, start, end) {
     if(!~ANNOTATIONS_TYPES.indexOf(type)) {
       throw new Error('unknown type' + type);
     }
     this._annotationType = annotationType;
+    this._content = content === undefined ? '' : content;
     this._id = id;
     this._type = type;
     this._start = start;
@@ -18,6 +19,7 @@ export class Annotation {
   }
 
   get annotationType() { return this._annotationType; }
+  get content() { return this._content; }
   get id() { return this._id; }
   get type() { return this._type; }
   get start() { return this._start; }

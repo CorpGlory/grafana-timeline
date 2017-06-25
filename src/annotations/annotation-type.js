@@ -5,7 +5,8 @@ const DEFAULT_MAPPING = function(seriesListItem) {
   /*
   Should return:
   [{
-    type: ('point' | 'segment' | 'ray')
+    content: [String],
+    type: ('point' | 'segment' | 'ray'),
     start: (timestamp),
     end: [timestamp],
   }]
@@ -19,29 +20,34 @@ const DEFAULT_MAPPING = function(seriesListItem) {
 
   var res = [];
   var currentSpan = undefined;
-  for(var i = 0; i < points.length; i++) {
+  for (var i = 0; i < points.length; i++) {
     var val = points[i][0];
     var timestamp = points[i][1];
 
-    if(val > THRESHOLD) {
-      if(currentSpan === undefined) {
+    if (val > THRESHOLD) {
+      if (currentSpan === undefined) {
         currentSpan = { type: 'segment', start: timestamp };
+        currentSpan.maxValue = val;
+      } else {
+        currentSpan.maxValue = Math.max(currentSpan.maxValue, val);
       }
     } else {
-      if(currentSpan !== undefined) {
+      if (currentSpan !== undefined) {
         currentSpan.end = timestamp;
+        currentSpan.content = 'Max ' + currentSpan.maxValue;
         res.push(currentSpan);
         currentSpan = undefined;
       }
     }
   }
 
-  if(currentSpan !== undefined) {
+  if (currentSpan !== undefined) {
     currentSpan.type = 'ray';
+    currentSpan.content = 'Max ' + currentSpan.maxValue;
     res.push(currentSpan);
   }
 
-  if(res.length === 0) {
+  if (res.length === 0) {
     res.push({
       type: 'segment',
       start: Math.round(fromTime + (toTime - fromTime) * 0.1),
@@ -101,7 +107,7 @@ export class AnnotationType {
   mapSeriesToAnnotations(seriesListItem) {
     var raws = this.mappingFunction(seriesListItem);
     return raws.map((r, i) => new Annotation(
-      this, i, r.type, r.start, r.end
+      this, i, r.content, r.type, r.start, r.end
     ));
   }
 

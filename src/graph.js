@@ -55,7 +55,7 @@ export class Graph {
       type: this._getVisType(annotation),
       start: annotation.start,
       end: annotation.end === undefined ? this._range.to : annotation.end,
-      content: 'no content'
+      content: annotation.content
     };
   }
 
