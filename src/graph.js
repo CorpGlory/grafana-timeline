@@ -2,7 +2,7 @@ import * as vis from './external/vis.min';
 
 
 export class Graph {
-  constructor($holder, height) {
+  constructor($holder, height, onRangeChange) {
     if($holder.length !== 1) {
       throw new Error('Can`t find holder for graph in DOM');
     }
@@ -10,13 +10,19 @@ export class Graph {
     var container = $holder.get()[0];
 
     var items = new vis.DataSet([]);
-    // Configuration for the Timeline
+
     var options = {};
     if(height !== undefined) {
       options.height = height + 'px';
     }
-    // Create a Timeline
+
     this._timeline = new vis.Timeline(container, items, options);
+
+    this._timeline.on('rangechanged', props => {
+      if(props.byUser && onRangeChange !== undefined) {
+        onRangeChange(props.start, props.end);
+      }
+    });
   }
 
   set height(value) {

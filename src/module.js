@@ -3,6 +3,8 @@ import { AnnotationsManager } from './annotations/annotations-manager.js';
 
 import { MetricsPanelCtrl } from 'app/plugins/sdk';
 
+import moment from 'moment';
+
 
 const PANEL_DEFAULTS = {
   annotationTypes: []
@@ -10,11 +12,12 @@ const PANEL_DEFAULTS = {
 
 
 export class Ctrl extends MetricsPanelCtrl {
-  constructor($scope, $injector) {
+  constructor($scope, $injector, timeSrv) {
     super($scope, $injector);
 
     _.defaults(this.panel, PANEL_DEFAULTS);
     $scope.dashboard = this.dashboard;
+    this.timeSrv = timeSrv;
 
     this.events.on('render', this._onRender.bind(this));
     this.events.on('data-received', this._onDataReceived.bind(this));
@@ -67,7 +70,17 @@ export class Ctrl extends MetricsPanelCtrl {
   }
 
   _initGraph() {
-    this._graph = new Graph(this.$visHolder, this.height);
+    this._graph = new Graph(
+      this.$visHolder, this.height, this._onGraphRangeChange.bind(this)
+    );
+  }
+
+  _onGraphRangeChange(start, end) {
+    this.timeSrv.setTime({
+      from : moment.utc(start),
+      to : moment.utc(end),
+    });
+    this.range.start = start;
   }
 
   get panelPath() {

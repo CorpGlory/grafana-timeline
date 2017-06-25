@@ -41,16 +41,17 @@ const DEFAULT_MAPPING = function(seriesListItem) {
     res.push(currentSpan);
   }
 
-  //if(res.length === 0) {
+  if(res.length === 0) {
     res.push({
       type: 'segment',
       start: Math.round(fromTime + (toTime - fromTime) * 0.1),
       end: Math.round(fromTime + (toTime - fromTime) * 0.9)
     });
-  //}
+  }
 
   return res;
 }
+
 
 export class AnnotationType {
   static getDefaultOptions(marticsTarget) {
