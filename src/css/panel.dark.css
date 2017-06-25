@@ -11,3 +11,13 @@
 {
   border-color: #555;
 }
+
+.vis-holder .vis-item {
+  background-color: #444;
+  color: #ddd;
+  border-color: #999;
+}
+
+.vis-holder .vis-item.vis-selected {
+  border-color: #cdcdcd;
+}

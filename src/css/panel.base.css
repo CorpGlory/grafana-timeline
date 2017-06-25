@@ -18,3 +18,7 @@
 .vis-holder .vis-time-axis .vis-text {
   font-size: 12px;
 }
+
+.vis-holder .vis-item {
+  border-radius: 0
+}
