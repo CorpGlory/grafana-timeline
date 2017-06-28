@@ -14,10 +14,16 @@
 
 .vis-holder .vis-item {
   background-color: #444;
-  color: #ddd;
   border-color: #999;
+  color: #ddd;
 }
 
 .vis-holder .vis-item.vis-selected {
   border-color: #cdcdcd;
+}
+
+.vis-holder div.vis-tooltip {
+  background-color: #444;
+  border-color: #999;
+  color: #ddd;
 }

@@ -9,6 +9,7 @@ const DEFAULT_MAPPING = function(seriesListItem) {
     type: ('point' | 'segment' | 'ray'),
     start: (timestamp),
     end: [timestamp],
+    title: [String]
   }]
   */
 
@@ -20,13 +21,17 @@ const DEFAULT_MAPPING = function(seriesListItem) {
 
   var res = [];
   var currentSpan = undefined;
-  for (var i = 0; i < points.length; i++) {
+  for (let i = 0; i < points.length; i++) {
     var val = points[i][0];
     var timestamp = points[i][1];
 
     if (val > THRESHOLD) {
       if (currentSpan === undefined) {
-        currentSpan = { type: 'segment', start: timestamp };
+        currentSpan = { 
+          type: 'segment', 
+          start: timestamp,
+          startIndex: i
+        };
         currentSpan.maxValue = val;
       } else {
         currentSpan.maxValue = Math.max(currentSpan.maxValue, val);
@@ -35,6 +40,9 @@ const DEFAULT_MAPPING = function(seriesListItem) {
       if (currentSpan !== undefined) {
         currentSpan.end = timestamp;
         currentSpan.content = 'Max ' + currentSpan.maxValue;
+        currentSpan.title = "Max: " + currentSpan.maxValue +
+          "<br/>" +
+          "Items length:" + currentSpan.startIndex
         res.push(currentSpan);
         currentSpan = undefined;
       }
@@ -51,19 +59,14 @@ const DEFAULT_MAPPING = function(seriesListItem) {
     res.push({
       type: 'segment',
       start: Math.round(fromTime + (toTime - fromTime) * 0.1),
-      end: Math.round(fromTime + (toTime - fromTime) * 0.9)
+      end: Math.round(fromTime + (toTime - fromTime) * 0.9),
+      title: fromTime + ' oh no ' + toTime,
+      content: '--longest--'
     });
   }
 
   return res;
 }
-
-const DEFAULT_POPUP_TEMPLATE = `<div>
-  <b> {{ annotation.type }}: </b>
-  {{ annotation.start }}, {{ annotation.end }}]
-</div>
-`;
-
 
 export class AnnotationType {
   static getDefaultOptions(marticsTarget) {
@@ -72,8 +75,7 @@ export class AnnotationType {
       mappingFunctionSource: (DEFAULT_MAPPING + "$")
         .replace('function DEFAULT_MAPPING(', 'function(')
         .replace(new RegExp('        ', 'g'), '  ')
-        .replace('      }$', '}'),
-      popupTemplate: DEFAULT_POPUP_TEMPLATE
+        .replace('      }$', '}')
     }
   }
 
@@ -86,9 +88,6 @@ export class AnnotationType {
 
   get name() { return this._options.name; }
   set name(value) { this._options.name = value; }
-
-  get popupTemplate() { return this._options.popupTemplate; }
-  set popupTemplate(value) { this._options.popupTemplate = value; }
 
   get mappingFunctionSource() {
     return this._options.mappingFunctionSource;
@@ -116,10 +115,7 @@ export class AnnotationType {
 
   mapSeriesToAnnotations(seriesListItem) {
     var raws = this.mappingFunction(seriesListItem);
-    return raws.map((r, i) => new Annotation(
-      this, i, r.content, r.type, r.start, r.end
-    ));
+    return raws.map((r, i) => new Annotation(this, i, r));
   }
-
 
 }

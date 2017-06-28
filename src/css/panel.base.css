@@ -22,3 +22,9 @@
 .vis-holder .vis-item {
   border-radius: 0
 }
+
+.vis-holder div.vis-tooltip {
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 12px;
+}

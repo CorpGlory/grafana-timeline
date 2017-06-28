@@ -11,7 +11,19 @@ export class Graph {
 
     var items = new vis.DataSet([]);
 
-    var options = {};
+    var options = {
+    };
+
+    var tooltipOptions = {
+      tooltip: {
+        followMouse: true,
+        overflowMethod: 'cap'
+      }
+    }
+
+    _.defaults(options, tooltipOptions);
+    console.log(options);
+    
     if(height !== undefined) {
       options.height = height + 'px';
     }
@@ -29,7 +41,10 @@ export class Graph {
     if(!$.isNumeric(value)) {
       throw new Error('height is not numberic');
     }
-    this._timeline.setOptions({ height: value + 'px' });
+    this._timeline.setOptions({ 
+      height: value + 'px',
+      maxHeight: value
+    });
   }
 
   set range(range) {
@@ -55,7 +70,10 @@ export class Graph {
       type: this._getVisType(annotation),
       start: annotation.start,
       end: annotation.end === undefined ? this._range.to : annotation.end,
-      content: annotation.content
+      content: annotation.content,
+      annotation: annotation,
+      title: annotation.title,
+      option: annotation.option
     };
   }
 
