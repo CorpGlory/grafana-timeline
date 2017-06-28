@@ -58,15 +58,22 @@ const DEFAULT_MAPPING = function(seriesListItem) {
   return res;
 }
 
+const DEFAULT_POPUP_TEMPLATE = `<div>
+  <b> {{ annotation.type }}: </b>
+  {{ annotation.start }}, {{ annotation.end }}]
+</div>
+`;
+
 
 export class AnnotationType {
   static getDefaultOptions(marticsTarget) {
     return {
-       name: 'AnnotationsLayer ' + marticsTarget.refId,
-       mappingFunctionSource: (DEFAULT_MAPPING + "$")
+      name: 'AnnotationsLayer ' + marticsTarget.refId,
+      mappingFunctionSource: (DEFAULT_MAPPING + "$")
         .replace('function DEFAULT_MAPPING(', 'function(')
         .replace(new RegExp('        ', 'g'), '  ')
-        .replace('      }$', '}')
+        .replace('      }$', '}'),
+      popupTemplate: DEFAULT_POPUP_TEMPLATE
     }
   }
 
@@ -79,6 +86,9 @@ export class AnnotationType {
 
   get name() { return this._options.name; }
   set name(value) { this._options.name = value; }
+
+  get popupTemplate() { return this._options.popupTemplate; }
+  set popupTemplate(value) { this._options.popupTemplate = value; }
 
   get mappingFunctionSource() {
     return this._options.mappingFunctionSource;

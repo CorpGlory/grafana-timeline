@@ -17,13 +17,20 @@
             type="text" class="gf-form-input width-16"
             ng-model="type.name"
             spellcheck="false"
-          >
+          />
       </div>
 
     	<h5 class="section-heading">Mapping function</h5>
     	<textarea
     		class="gf-form-input codeEditor"
     		ng-model="type.mappingFunctionSource"
+    		rows="10"
+    	/>
+
+      <h5 class="section-heading">Popup template</h5>
+    	<textarea
+    		class="gf-form-input codeEditor"
+    		ng-model="type.popupTemplate"
     		rows="10"
     	/>
     </div>
