@@ -2,13 +2,9 @@ import * as vis from './external/vis.min';
 
 
 export class Graph {
-  constructor($holder, height, groupLayers, onRangeChange) {
+  constructor($holder, height, onRangeChange) {
     if($holder.length !== 1) {
       throw new Error('Can`t find holder for graph in DOM');
-    }
-
-    if(typeof(groupLayers) !== "boolean"){
-      throw new Error('groupLayers should be boolean');
     }
 
     var container = $holder.get()[0];
@@ -26,7 +22,6 @@ export class Graph {
     }
 
     _.defaults(options, tooltipOptions);
-    console.log(options);
     
     if(height !== undefined) {
       options.height = height + 'px';
@@ -50,8 +45,6 @@ export class Graph {
       maxHeight: value
     });
   }
-
-  set groupLayers(value) { this._groupLayers = value; }
 
   set range(range) {
     this._range = range;
@@ -83,18 +76,32 @@ export class Graph {
     };
   }
 
+  setTypes(types) {
+    this._groupLayers = true;
+    this._groups = new vis.DataSet();
+    _.each(types, (t, i) => {
+      this._groups.add({ id: i, content: t.name });
+    });
+    this._timeline.setGroups(this._groups);
+    console.log('set types!');
+  }
+
+  removeTypes() {
+    this._groupLayers = false;
+    this._timeline.setGroups(undefined);
+  }
 
   setAnnotations(annotations) {
     var ans = [];
-    for (var i = 0; i < annotations.length; i++) {
+    
+    for (let i = 0; i < annotations.length; i++) {
       var as = annotations[i];
-      for (var j = 0; j < as.length; j++) {
+      
+      for (let j = 0; j < as.length; j++) {
         var an = as[j];
         an.id = ans.length;
         var vobj = this._annotationToVisObject(an);
-        if(this._groupLayers) {
-          vobj.group = i;
-        }
+        vobj.group = i;
         ans.push(vobj);
       }
     }

@@ -18,7 +18,7 @@ export class AnnotationsManager {
     );
   }
 
-  get types() { 
+  get types() {
     if(this._options.targets.length > this._types.length) {
       this._adjustTypesOptions();
     }

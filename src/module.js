@@ -77,9 +77,10 @@ export class Ctrl extends MetricsPanelCtrl {
 
   _initGraph() {
     this._graph = new Graph(
-      this.$visHolder, this.height, this.panel.display.groupLayers,
+      this.$visHolder, this.height,
       this._onGraphRangeChange.bind(this)
     );
+    this.updateGraphLayers();
   }
 
   _onGraphRangeChange(start, end) {
@@ -91,7 +92,11 @@ export class Ctrl extends MetricsPanelCtrl {
   }
 
   updateGraphLayers() {
-    this._graph.groupLayers = this.display.groupLayers;
+    if(this.panel.display.groupLayers) {
+      this._graph.setTypes(this.annotationsManager.types);
+    } else {
+      this._graph.removeTypes();
+    }
   }
 
   get panelPath() {
