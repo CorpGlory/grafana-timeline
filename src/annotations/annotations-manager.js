@@ -5,8 +5,7 @@ export class AnnotationsManager {
 
   constructor(options) {
     this._options = options;
-    this._adjustOptions();
-    this._updateTypes();
+    this._adjustTypesOptions();
   }
 
   mapSeriesToAnnotations(seriesList) {
@@ -15,19 +14,18 @@ export class AnnotationsManager {
       seriesList = [seriesList];
     }
     return seriesList.map(
-      (sl, i) => this._types[i].mapSeriesToAnnotations(sl)
+      (sl, i) => this.types[i].mapSeriesToAnnotations(sl)
     );
   }
 
-  get types() { return this._types; }
-
-  _updateTypes() {
-    this._types = this._options.targets.map(
-      (t, i) => new AnnotationType(t, this._options.annotationTypes[i])
-    );
+  get types() { 
+    if(this._options.targets.length > this._types.length) {
+      this._adjustTypesOptions();
+    }
+    return this._types; 
   }
 
-  _adjustOptions() {
+  _adjustTypesOptions() {
     _(this._options.targets)
       .drop(this._options.annotationTypes.length)
       .each(t => {
@@ -35,5 +33,8 @@ export class AnnotationsManager {
           AnnotationType.getDefaultOptions(t)
         );
       });
+    this._types = this._options.targets.map(
+      (t, i) => new AnnotationType(t, this._options.annotationTypes[i])
+    );
   }
 }

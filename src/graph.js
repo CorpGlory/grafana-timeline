@@ -2,9 +2,13 @@ import * as vis from './external/vis.min';
 
 
 export class Graph {
-  constructor($holder, height, onRangeChange) {
+  constructor($holder, height, groupLayers, onRangeChange) {
     if($holder.length !== 1) {
       throw new Error('Can`t find holder for graph in DOM');
+    }
+
+    if(typeof(groupLayers) !== "boolean"){
+      throw new Error('groupLayers should be boolean');
     }
 
     var container = $holder.get()[0];
@@ -47,6 +51,8 @@ export class Graph {
     });
   }
 
+  set groupLayers(value) { this._groupLayers = value; }
+
   set range(range) {
     this._range = range;
     this._timeline.setWindow(range.from, range.to)
@@ -54,7 +60,7 @@ export class Graph {
 
   _getVisType(annotation) {
     if(annotation.type === 'point') {
-      return 'ponit';
+      return 'point';
     }
     if(annotation.type === 'range') {
       return 'range';
@@ -77,11 +83,22 @@ export class Graph {
     };
   }
 
+
   setAnnotations(annotations) {
-    var ans = _(annotations)
-      .map(as => as.map(this._annotationToVisObject.bind(this)))
-      .flatten()
-      .value();
+    var ans = [];
+    for (var i = 0; i < annotations.length; i++) {
+      var as = annotations[i];
+      for (var j = 0; j < as.length; j++) {
+        var an = as[j];
+        an.id = ans.length;
+        var vobj = this._annotationToVisObject(an);
+        if(this._groupLayers) {
+          vobj.group = i;
+        }
+        ans.push(vobj);
+      }
+    }
+
     var items = new vis.DataSet(ans);
     this._timeline.setItems(items);
   }

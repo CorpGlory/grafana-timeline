@@ -25,6 +25,7 @@ export class Annotation {
   get annotationType() { return this._annotationType; }
   get content() { return this._content; }
   get id() { return this._id; }
+  set id(value) { this._id = value; }
   get type() { return this._type; }
   get start() { return this._start; }
   get end() { return this._end; }

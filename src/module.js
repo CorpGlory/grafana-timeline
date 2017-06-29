@@ -7,7 +7,10 @@ import moment from 'moment';
 
 
 const PANEL_DEFAULTS = {
-  annotationTypes: []
+  annotationTypes: [],
+  display: {
+    groupLayers: true
+  }
 };
 
 
@@ -47,6 +50,9 @@ export class Ctrl extends MetricsPanelCtrl {
     this.addEditorTab(
       'Data Mapping', thisPartialPath + 'editor.mapping.html', 2
     );
+    this.addEditorTab(
+      'Display', thisPartialPath + 'editor.display.html', 3
+    );
   }
 
   _onDataReceived(seriesList) {
@@ -71,7 +77,8 @@ export class Ctrl extends MetricsPanelCtrl {
 
   _initGraph() {
     this._graph = new Graph(
-      this.$visHolder, this.height, this._onGraphRangeChange.bind(this)
+      this.$visHolder, this.height, this.panel.display.groupLayers,
+      this._onGraphRangeChange.bind(this)
     );
   }
 
@@ -81,6 +88,10 @@ export class Ctrl extends MetricsPanelCtrl {
       to : moment.utc(end),
     });
     this.range.start = start;
+  }
+
+  updateGraphLayers() {
+    this._graph.groupLayers = this.display.groupLayers;
   }
 
   get panelPath() {
