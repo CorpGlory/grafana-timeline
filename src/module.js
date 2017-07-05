@@ -2,6 +2,7 @@ import { Graph } from './graph';
 import { AnnotationsManager } from './annotations/annotations-manager.js';
 
 import { MetricsPanelCtrl } from 'app/plugins/sdk';
+import * as core from 'app/core/core';
 
 import moment from 'moment';
 
@@ -26,6 +27,9 @@ export class Ctrl extends MetricsPanelCtrl {
     this.events.on('data-received', this._onDataReceived.bind(this));
     this.events.on('init-edit-mode', this._onInitEditMode.bind(this));
     this.events.on('panel-initialized', this._onRender.bind(this));
+
+    core.appEvents.on('graph-hover', this._onGraphHover.bind(this));
+    core.appEvents.on('graph-hover-clear', this._onGraphHoverClear.bind(this));
 
     this._initStyles();
 
@@ -89,6 +93,21 @@ export class Ctrl extends MetricsPanelCtrl {
       to : moment.utc(end),
     });
     this.range.start = start;
+  }
+
+  _onGraphHover(evt) {
+    // ignore other graph hover events if shared tooltip is disabled
+    if(!this.dashboard.sharedTooltipModeEnabled()) {
+      return;
+    }
+    if(this._graph === undefined) {
+      return;
+    }
+    this._graph.setHover(new Date(evt.pos.x));
+  }
+
+  _onGraphHoverClear(evt) {
+    this._graph.removeHover();
   }
 
   updateGraphLayers() {

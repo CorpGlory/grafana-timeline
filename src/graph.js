@@ -1,3 +1,5 @@
+import { GraphCrosshair } from './graph-crosshair';
+
 import * as vis from './external/vis.min';
 
 
@@ -11,8 +13,7 @@ export class Graph {
 
     var items = new vis.DataSet([]);
 
-    var options = {
-    };
+    var options = {};
 
     var tooltipOptions = {
       tooltip: {
@@ -28,6 +29,7 @@ export class Graph {
     }
 
     this._timeline = new vis.Timeline(container, items, options);
+    this._crossHair = new GraphCrosshair(this._timeline);
 
     this._timeline.on('rangechanged', props => {
       if(props.byUser && onRangeChange !== undefined) {
@@ -74,6 +76,14 @@ export class Graph {
       title: annotation.title,
       option: annotation.option
     };
+  }
+
+  setHover(date) {
+    this._crossHair.show(date);
+  }
+
+  removeHover() {
+    this._crossHair.hide();
   }
 
   setTypes(types) {
