@@ -51,7 +51,6 @@ export class GraphCrosshair {
     }
 
     this._timeline.setSelection(res);
-    
   }
 
   _unhoverElements() {
