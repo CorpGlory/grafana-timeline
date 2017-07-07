@@ -38,11 +38,24 @@ export class GraphCrosshair {
   }
 
   _hoverElements() {
-    var time = this._hoverTime;
+    var res = []; // list of ids to select
+    var time = this._hoverTime.getTime();
+
+    for(var i = 0; i < this._items.length; i++) {
+      var item = this._items[i];
+      var start = item.start;
+      var end = item.end;
+      if(start <= time && time <= end) {
+        res.push(item.id);
+      }
+    }
+
+    this._timeline.setSelection(res);
+    
   }
 
   _unhoverElements() {
-
+    this._timeline.setSelection([]);
   }
 
   _rebuildCustomTime() {
