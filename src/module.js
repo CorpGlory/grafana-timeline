@@ -82,7 +82,9 @@ export class Ctrl extends MetricsPanelCtrl {
   _initGraph() {
     this._graph = new Graph(
       this.$visHolder, this.height,
-      this._onGraphRangeChange.bind(this)
+      this._onGraphRangeChange.bind(this),
+      this._onTimelineHover.bind(this),
+      this._onTimelineHoverClear.bind(this)
     );
     this.updateGraphLayers();
   }
@@ -97,17 +99,37 @@ export class Ctrl extends MetricsPanelCtrl {
 
   _onGraphHover(evt) {
     // ignore other graph hover events if shared tooltip is disabled
-    if(!this.dashboard.sharedTooltipModeEnabled()) {
+    if(
+      !this.dashboard.sharedTooltipModeEnabled() || 
+      this.otherPanelInFullscreenMode()
+    ) {
       return;
     }
     if(this._graph === undefined) {
       return;
     }
-    this._graph.setHover(new Date(evt.pos.x));
+    this._graph.setHover(
+      new Date(evt.pos.x), 
+      this.dashboard.graphTooltip == 2 // where 2 means "Shared tooltip"
+    );
   }
 
   _onGraphHoverClear(evt) {
     this._graph.removeHover();
+  }
+
+  _onTimelineHover(date) {
+    core.appEvents.emit('graph-hover', {
+      pos: {
+        x: date.getTime(),
+        panelRelY: 0.3 // TODO: investigate better UX
+      },
+      panel: this.panel
+    });
+  }
+
+  _onTimelineHoverClear() {
+    
   }
 
   updateGraphLayers() {

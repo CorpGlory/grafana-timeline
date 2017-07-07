@@ -4,7 +4,7 @@ import * as vis from './external/vis.min';
 
 
 export class Graph {
-  constructor($holder, height, onRangeChange) {
+  constructor($holder, height, onRangeChange, onHover, onHoverClean) {
     if($holder.length !== 1) {
       throw new Error('Can`t find holder for graph in DOM');
     }
@@ -13,14 +13,16 @@ export class Graph {
 
     var items = new vis.DataSet([]);
 
-    var options = {};
+    var options = {
+      editable: false
+    };
 
     var tooltipOptions = {
       tooltip: {
         followMouse: true,
         overflowMethod: 'cap'
       }
-    }
+    };
 
     _.defaults(options, tooltipOptions);
     
@@ -29,7 +31,9 @@ export class Graph {
     }
 
     this._timeline = new vis.Timeline(container, items, options);
-    this._crossHair = new GraphCrosshair(this._timeline);
+    this._crossHair = new GraphCrosshair(
+      this._timeline, onHover, onHoverClean
+    );
 
     this._timeline.on('rangechanged', props => {
       if(props.byUser && onRangeChange !== undefined) {
@@ -42,7 +46,7 @@ export class Graph {
     if(!$.isNumeric(value)) {
       throw new Error('height is not numberic');
     }
-    this._timeline.setOptions({ 
+    this._timeline.setOptions({
       height: value + 'px',
       maxHeight: value
     });
@@ -50,7 +54,7 @@ export class Graph {
 
   set range(range) {
     this._range = range;
-    this._timeline.setWindow(range.from, range.to)
+    this._timeline.setWindow(range.from, range.to);
   }
 
   _getVisType(annotation) {
@@ -78,8 +82,8 @@ export class Graph {
     };
   }
 
-  setHover(date) {
-    this._crossHair.show(date);
+  setHover(date, sharedTooltip) {
+    this._crossHair.show(date, sharedTooltip);
   }
 
   removeHover() {
@@ -93,7 +97,6 @@ export class Graph {
       this._groups.add({ id: i, content: t.name });
     });
     this._timeline.setGroups(this._groups);
-    console.log('set types!');
   }
 
   removeTypes() {
@@ -106,7 +109,7 @@ export class Graph {
     
     for (let i = 0; i < annotations.length; i++) {
       var as = annotations[i];
-      
+
       for (let j = 0; j < as.length; j++) {
         var an = as[j];
         an.id = ans.length;
@@ -117,7 +120,9 @@ export class Graph {
     }
 
     var items = new vis.DataSet(ans);
-    this._timeline.setItems(items);
+    this._timeline.setItems(ans);
+    this._crossHair.setItems(ans);
+
   }
 
 }
