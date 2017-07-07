@@ -5,8 +5,8 @@
   "info": {
     "description": "Timeline with annotations visualisation",
     "author": {
-      "name": "Alexey Velikiy (ping@corpglory.com)",
-      "url": "https://github.com/jonyrock"
+      "name": "CorpGlory: Alexey Velikiy, Evgeny Smyshlyaev (ping@corpglory.com)",
+      "url": "https://github.com/corpglory/grafana-timeline"
     },
     "keywords": ["timeline", "visjs", "annotations"],
     "logos": {
