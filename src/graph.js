@@ -15,7 +15,8 @@ export class Graph {
     var items = new vis.DataSet([]);
 
     var options = {
-      editable: false
+      editable: false,
+      start: 1498150800000
     };
 
     var tooltipOptions = {
@@ -51,11 +52,6 @@ export class Graph {
       height: value + 'px',
       maxHeight: value
     });
-  }
-
-  set range(range) {
-    this._range = range;
-    this._timeline.setWindow(range.from, range.to);
   }
 
   _getVisType(annotation) {
@@ -105,7 +101,8 @@ export class Graph {
     this._timeline.setGroups(undefined);
   }
 
-  setAnnotations(annotations) {
+  setAnnotations(range, annotations) {
+    this._range = range;
     var ans = [];
     
     for (let i = 0; i < annotations.length; i++) {
@@ -123,6 +120,8 @@ export class Graph {
     var items = new vis.DataSet(ans);
     this._timeline.setItems(ans);
     this._crossHair.setItems(ans);
+
+    this._timeline.setWindow(range.from, range.to, { animation: false });
 
   }
 
