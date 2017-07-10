@@ -28,3 +28,12 @@
   box-shadow: none;
   font-size: 12px;
 }
+
+.vis-holder {
+  cursor: crosshair;
+}
+
+.vis-holder .vis-custom-time {
+  cursor: crosshair;
+  pointer-events: none;
+}

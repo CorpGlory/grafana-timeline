@@ -129,7 +129,7 @@ export class Ctrl extends MetricsPanelCtrl {
   }
 
   _onTimelineHoverClear() {
-    
+    core.appEvents.emit('graph-hover-clear');
   }
 
   updateGraphLayers() {

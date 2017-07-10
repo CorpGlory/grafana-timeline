@@ -10,6 +10,7 @@ export class Graph {
     }
 
     var container = $holder.get()[0];
+    $holder.mouseout(onHoverClean);
 
     var items = new vis.DataSet([]);
 
