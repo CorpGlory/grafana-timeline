@@ -15,8 +15,7 @@ export class Graph {
     var items = new vis.DataSet([]);
 
     var options = {
-      editable: false,
-      start: 1498150800000
+      editable: false
     };
 
     var tooltipOptions = {
