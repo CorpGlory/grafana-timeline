@@ -26,6 +26,9 @@ export class GraphCrosshair {
   }
 
   hide() {
+    if(!this._visible) {
+      return;
+    }
     this._timeline.removeCustomTime(this._id);
     this._visible = false;
     if(this._sharedTooltip) {

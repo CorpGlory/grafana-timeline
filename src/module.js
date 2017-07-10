@@ -91,8 +91,8 @@ export class Ctrl extends MetricsPanelCtrl {
 
   _onGraphRangeChange(start, end) {
     this.timeSrv.setTime({
-      from : moment.utc(start),
-      to : moment.utc(end),
+      from: moment.utc(start),
+      to: moment.utc(end)
     });
     this.range.start = start;
   }
